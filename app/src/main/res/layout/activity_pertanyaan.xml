@@ -26,12 +26,13 @@
             android:layout_marginHorizontal="20dp"
             android:orientation="horizontal">
             <TextView
+                android:id="@+id/id_pertanyaan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="12pt"
                 android:textStyle="bold"
-                android:text="Lapangan parkir yang memadai"/>
+                android:text="---"/>
         </LinearLayout>
 
 
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
+                android:id="@+id/id_sg_kepentingan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -91,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="20pt"
-                android:text="Kepuasan"/>
+                android:text="Kepentingan"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,6 +101,7 @@
             android:paddingTop="50dp"
             android:orientation="vertical">
             <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
+                android:id="@+id/id_sg_kinerja"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -149,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="20pt"
-                android:text="Kepentingan"/>
+                android:text="Kinerja"/>
         </LinearLayout>
 
 

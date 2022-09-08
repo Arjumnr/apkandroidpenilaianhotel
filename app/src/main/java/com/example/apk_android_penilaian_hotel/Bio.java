@@ -2,8 +2,12 @@ package com.example.apk_android_penilaian_hotel;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,70 +28,64 @@ import java.util.Map;
 
 public class Bio extends AppCompatActivity {
 
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    ProgressBar loadingPb;
+
+    public static final String mypreference = "mypref";
+    public static final String shNama = "namaKey";
+    public static final String shUmur = "umurKey";
+
+    String snama,sumur,skomentar_tambahan;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+//
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bio);
+        //
+        final EditText etNama = findViewById(R.id.id_nama);
+        final EditText etUmur = findViewById(R.id.id_umur);
+        final EditText etKomentar = findViewById(R.id.id_komentar);
+        final Button btnSimpan = findViewById(R.id.id_btnSimpan);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Pease Wait.......");
+        progressDialog.setCancelable(false);
+        final SharedPrefManager prefManager = new SharedPrefManager(getApplicationContext());
+        Boolean isiBio = prefManager.pengisianBio();
 
-
-        EditText etNama = findViewById(R.id.id_nama);
-        EditText etUmur = findViewById(R.id.id_umur);
-        EditText etKomentar = findViewById(R.id.id_komentar);
-        Button btnSimpan = findViewById(R.id.id_btnSimpan);
-        ProgressBar loadingPb;
-
+//
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
+                String sNama = etNama.getText().toString();
+                String sUmur = etUmur.getText().toString();
+                String sKomen = etKomentar.getText().toString();
 
-//                if(etNama.getText().toString().isEmpty() || etUmur.getText().toString().isEmpty() ){
-//                    Toast.makeText(Bio.this, "Data Tidak Boleh Kosong", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+                if (sNama == "" && sUmur == "") {
+                    Toast.makeText(Bio.this, "Data Tidak Boleh Kosong", Toast.LENGTH_SHORT).show();
+                }else if (sNama != "" && sUmur !=""){
+                    ModelBio modelBio = new ModelBio(sNama, sNama);
+                    prefManager.setIsiBio(modelBio, true);
+                    startActivity(new Intent(getApplicationContext(), pertanyaan.class));
+                }else {
+                    progressDialog.dismiss();
+                    Toast.makeText(Bio.this, "GAGAL MENYIMPAN", Toast.LENGTH_SHORT).show();
+                }
 
-                startActivity(new Intent(getApplicationContext(),pertanyaan.class));
 
-//                postData
+
             }
         });
-
-//        private void postDataResponden(String nama, String umur){
-//            String url = "";
-//            loadingPb.setVisibility(View.VISIBLE);
-//
-//            RequestQueue queue = Volley.newRequestQueue(Bio.this);
-//
-//            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    loadingPb.setVisibility(View.GONE);
-//                    try {
-////                        JSONObject respObj = new JSONObject(response);
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//
-//                    }
-//
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    Toast.makeText(Bio.this, "Fail to get response = " + error, Toast.LENGTH_SHORT).show();
-//                }
-//            }){
-//                protected  Map<String,String> getParams(){
-//                    Map<String, String> params = new HashMap<String, String>();
-//
-//                    params.put("nama", etNama);
-//                    params.put("umur", etUmur);
-//                    params.put("komentar_tambahan", etKomentar);
-//                    return params;
-//                }
-//            };
-//
-//        }
     }
+
+
+
+
 
 
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">apk-android-penilaian-hotel</string>
     <string name="register" />
+    <string name="welcome">Selamat Datang %s</string>
 </resources>

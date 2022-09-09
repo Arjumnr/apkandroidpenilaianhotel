@@ -1,15 +1,14 @@
 package com.example.apk_android_penilaian_hotel;
 
-import static com.example.apk_android_penilaian_hotel.Bio.mypreference;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.apk_android_penilaian_hotel.Models.ModelBio;
+import com.example.apk_android_penilaian_hotel.Models.SharedPrefManager;
 
 public class finish extends AppCompatActivity {
 
@@ -21,7 +20,7 @@ public class finish extends AppCompatActivity {
         final Button btnFinish = findViewById(R.id.id_btn_finish);
         final SharedPrefManager prefManager = new SharedPrefManager(this);
 
-        ModelBio modelBio = prefManager.getIsiBio();
+        ModelBio modelBio = prefManager.getUserBio();
 
 
         btnFinish.setOnClickListener(new View.OnClickListener() {

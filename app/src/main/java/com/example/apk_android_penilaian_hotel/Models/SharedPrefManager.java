@@ -1,4 +1,4 @@
-package com.example.apk_android_penilaian_hotel;
+package com.example.apk_android_penilaian_hotel.Models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,14 +10,14 @@ public class SharedPrefManager {
     private static final String KEY_UMUR = "umurKEY";
     private static final String ISI_KEY = "isinya_bro";
 
-    SharedPrefManager(Context context){
+    public SharedPrefManager(Context context){
         preferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public ModelBio getIsiBio(){
+    public ModelBio getUserBio(){
         return new ModelBio(
-                preferences.getString(KEY_NAMA,null),
-                preferences.getString(KEY_UMUR,null)
+                preferences.getString(KEY_NAMA, null),
+                preferences.getString(KEY_UMUR, null)
         );
     }
 

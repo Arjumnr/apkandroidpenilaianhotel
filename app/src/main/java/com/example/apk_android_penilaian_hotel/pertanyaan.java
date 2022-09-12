@@ -2,9 +2,11 @@ package com.example.apk_android_penilaian_hotel;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.apk_android_penilaian_hotel.Models.ModelBio;
+import com.example.apk_android_penilaian_hotel.Models.ModelPertanyaan;
 import com.example.apk_android_penilaian_hotel.Models.SharedPrefManager;
 import com.nex3z.togglebuttongroup.SingleSelectToggleGroup;
 import com.nex3z.togglebuttongroup.button.CircularToggle;
@@ -27,27 +30,27 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class pertanyaan extends AppCompatActivity {
 
     String[] pertanyaanForResponden;
     String url;
     String output = "";
-    public static int  benar, salah;
-
+    ModelPertanyaan modelPertanyaan;
     TextView pertanyaan, nomorPertanyaan;
-    Button btnNext ;
+
 
 
     //radio button library
     CircularToggle pilKepentingan5, pilKepentingan4, pilKepentingan3, pilKepentingan2, pilKepentingan1;
     CircularToggle pilKinerja5, pilKinerja4, pilKinerja3, pilKinerja2, pilKinerja1;
 
-    int pert = 0;
+    int indexPertanyaan = 0;
     int noPert = 0;
 //    ModelPertanyaan restPertanyaan = new ModelPertanyaan();
     int jawabanKepentingan, jawabanKinerja;
-    ArrayList<String> listdata = new ArrayList<String>();
+    ArrayList<String> listdata = new ArrayList<>();
     ArrayList<String> listpertanyaan = new ArrayList<String>();
 
 
@@ -55,6 +58,7 @@ public class pertanyaan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pertanyaan);
+
         //
          pilKepentingan5 = findViewById(R.id.choice_5);
          pilKepentingan4 = findViewById(R.id.choice_4);
@@ -69,18 +73,17 @@ public class pertanyaan extends AppCompatActivity {
          pilKinerja1 = findViewById(R.id.choice_1p);
          //
         nomorPertanyaan = findViewById(R.id.id_noPertanyaan);
+        pertanyaan = findViewById(R.id.id_pertanyaan);
+
+        SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
+        SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
+
         //
          final SharedPrefManager prefManager = new SharedPrefManager(this);
          if(!prefManager.pengisianBio()){
              backToBio();
          }
 
-         pertanyaan = findViewById(R.id.id_pertanyaan);
-
-        SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
-        SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
-
-        getData();
 
         ModelBio modelBio = prefManager.getUserBio();
 
@@ -89,40 +92,35 @@ public class pertanyaan extends AppCompatActivity {
 
         Log.e("tag", "namanya" + sNama);
 
-
-
-        //getData
         url = "http://hotels.googlee.win/api/get-all-pertanyaan";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         try {
-
                             JSONObject jsonObject = new JSONObject(response.toString());
                             JSONArray jsonArray = jsonObject.getJSONArray("data");
-                            System.out.println(jsonArray.get(1));
-                            Object jsonObject12 = jsonArray.get(noPert);
-                            System.out.println("jesonnnnnnn"+jsonObject12);
-                            HashMap<String, String> ok = new HashMap<>();
-                            System.out.println("ini ok "+ok);
-
-
 
                             for (int i=0; i<jsonArray.length(); i++){
-                                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                     Log.e("jsobj", "jsobj" + jsonObject1);
+//                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+//                                Log.e("jsobj", "jsobj" + jsonObject1);
 //                                pertanyaan.setText(jsonObject1.getString("pertanyaan"));
                                 listdata.add(jsonArray.getString(i));
-                                Log.e("donee ", "donee") ;
+//                                Log.e("donee ", "donee") ;
 
                             }
+
+                            Log.e("list1", "list1" + listdata.size());
+                            String per = listdata.get(indexPertanyaan);
+                            JSONObject joData = new JSONObject(per);
+                            per = joData.getString("pertanyaan");
+                            pertanyaan.setText(per);
                             noPert++;
-                            nomorPertanyaan.setText(""+noPert+"/"+jsonArray.length());
-                            //menghitung total data listdata
-//                            Log.e("list", ""+listdata.size());
+                            nomorPertanyaan.setText("" + noPert + "/" + jsonArray.length());
+
+                            Log.e("isi per", "Isi Per"+ per);
+
 
 
 
@@ -145,25 +143,52 @@ public class pertanyaan extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-        Log.e("list", ""+listdata);
+//        Log.e("isi List Data2", "isi List Data2" + listdata);
 
-//        for(int i=0; i <listdata.size(); i++  ){
-//            listpertanyaan.add(listdata.get(i));
-//        }
-//        pertanyaan.setText(""+ listdata);
+
+
+
     }
 
-    public void next(View view) {
-        if (jawKepentingan() !=0 && jawKinerja() != 0)benar++;
-        else salah++;
+    public void next(View view) throws JSONException {
+        //
+        SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
+        SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
+        //
+        listpertanyaan = listdata;
+        Log.e("index", "index" + indexPertanyaan);
+        Log.e("nopert", "nopert" + noPert);
+        indexPertanyaan++;
+        noPert++;
+
+        if ( indexPertanyaan == listpertanyaan.size() ){
+            startActivity(new Intent(getApplicationContext(), finish.class));
+        } else if (jawKepentingan() !=0 && jawKinerja() != 0){
+            output = listpertanyaan.get(indexPertanyaan);
+            JSONObject jsonObject = new JSONObject(output);
+            output = jsonObject.getString("pertanyaan");
+            sgKepentingan.clearCheck();
+            sgKinerja.clearCheck();
+            pertanyaan.setText(output);
+            nomorPertanyaan.setText("" + noPert + "/" + listpertanyaan.size());
+
+        }else if (jawKepentingan() == 0){
+            Toast toast = Toast.makeText(pertanyaan.this, "Anda Belum Memilih Kepentingan", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+        }else if (jawKinerja() == 0){
+            Toast toast = Toast.makeText(pertanyaan.this, "Anda Belum Memilih Kinerja", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+        }else{
+            Toast toast = Toast.makeText(pertanyaan.this, "Anda Belum Memilih", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+        }
 //        cek nilai radio button
 //        Log.e("jawkepentingan", "jawkepentingan"+jawabanKepentingan);
 
-        noPert++;
-        Log.e("list", ""+listdata.size());
-        if (noPert < listdata.size()){
-            nomorPertanyaan.setText(""+noPert+"/"+listdata.size());
-        }
+
     }
 
 
@@ -205,18 +230,71 @@ public class pertanyaan extends AppCompatActivity {
         return 0;
     }
 
-    void getData(){
+    void getDATA(){
+        url = "http://hotels.googlee.win/api/get-all-pertanyaan";
 
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            JSONArray jsonArray = jsonObject.getJSONArray("data");
+
+                            for (int i=0; i<jsonArray.length(); i++){
+//                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+//                                Log.e("jsobj", "jsobj" + jsonObject1);
+//                                pertanyaan.setText(jsonObject1.getString("pertanyaan"));
+                                listdata.add(jsonArray.getString(i));
+//                                Log.e("donee ", "donee") ;
+
+                            }
+
+//                            listpertanyaan = listdata;
+//                            Log.e("list1", "list1" + listdata.size());
+                            String per = listdata.get(indexPertanyaan);
+                            JSONObject joData = new JSONObject(per.toString());
+                            per = joData.getString("pertanyaan");
+                            pertanyaan.setText(per);
+//                            noPert++;
+//                            nomorPertanyaan.setText(""+noPert+"/"+jsonArray.length());
+//
+//                            Log.e("isi per", "Isi Per"+ per);
+
+
+
+
+                        } catch (JSONException e) {
+                            Log.e("ERROR", "erork");
+                            e.printStackTrace();
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(
+                                pertanyaan.this,
+                                error.getMessage(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+//        Log.e("isi List Data2", "isi List Data2" + listdata);
+    }
+
+    void showPertanyaan(){
 
 
 
     }
 
-    void next(){
-        Log.d("Current",
-                "onClick: " + noPert );
-//        pertanyaan.setText();
-    }
+
 
 
 }

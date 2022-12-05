@@ -79,18 +79,18 @@ public class pertanyaan extends AppCompatActivity {
         SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
 
         //
-         final SharedPrefManager prefManager = new SharedPrefManager(this);
-         if(!prefManager.pengisianBio()){
-             backToBio();
-         }
+//         final SharedPrefManager prefManager = new SharedPrefManager(this);
+//         if(!prefManager.pengisianBio()){
+//             backToBio();
+//         }
 
 
-        ModelBio modelBio = prefManager.getUserBio();
+//        ModelBio modelBio = prefManager.getUserBio();
+//
+//        String sNama = modelBio.getNama();
+//        String sUmur = modelBio.getUmur();
 
-        String sNama = modelBio.getNama();
-        String sUmur = modelBio.getUmur();
-
-        Log.e("tag", "namanya" + sNama);
+//        Log.e("tag", "namanya" + sNama);
 
         url = "http://hotels.googlee.win/api/get-all-pertanyaan";
 

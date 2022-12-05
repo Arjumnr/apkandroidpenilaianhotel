@@ -20,9 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //
-        final SharedPrefManager prefManager = new SharedPrefManager(getApplicationContext());
-        Boolean statusBio = prefManager.pengisianBio();
+
 
         Thread thread = new Thread(){
           @Override
@@ -31,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                   sleep(3000);
                   //
 
-                      startActivity(new Intent(getApplicationContext(), Bio.class));
+                      startActivity(new Intent(getApplicationContext(), pertanyaan.class));
 
               }catch (InterruptedException e){
                   e.printStackTrace();

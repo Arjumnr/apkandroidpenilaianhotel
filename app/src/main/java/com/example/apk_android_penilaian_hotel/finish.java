@@ -36,8 +36,9 @@ public class finish extends AppCompatActivity {
     }
 
     private void backToBio(){
-        startActivity(new Intent(getApplicationContext(), Bio.class));
+
         finish();
+        System.exit(0);
     }
 
 }

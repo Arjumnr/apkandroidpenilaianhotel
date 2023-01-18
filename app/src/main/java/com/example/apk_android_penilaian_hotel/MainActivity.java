@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
                   sleep(3000);
                   //
 
-                      startActivity(new Intent(getApplicationContext(), pertanyaan.class));
+                      startActivity(new Intent(getApplicationContext(), Petunjuk.class));
 
               }catch (InterruptedException e){
                   e.printStackTrace();

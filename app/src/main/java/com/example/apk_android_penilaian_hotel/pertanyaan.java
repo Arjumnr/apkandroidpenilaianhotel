@@ -86,7 +86,10 @@ public class pertanyaan extends AppCompatActivity {
 
 //        Log.e("tag", "namanya" + sNama);
 
-        url = "http://hotels.googlee.win/api/get-all-pertanyaan";
+//        url = "http://hotels.googlee.win/api/get-all-pertanyaan";
+//        url = "http://http://127.0.0.1:8000/api/get-all-pertanyaan";
+        url = "http://hotels.xapps.my.id/api/get-all-pertanyaan";
+
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

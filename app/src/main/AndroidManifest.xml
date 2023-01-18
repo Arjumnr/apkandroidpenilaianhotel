@@ -5,13 +5,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="Penilaian Hotel"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Apkandroidpenilaianhotel">
+        android:theme="@style/Theme.Apkandroidpenilaianhotel"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Petunjuk"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".finish"
             android:exported="false" />

@@ -1,9 +1,12 @@
 package com.example.apk_android_penilaian_hotel;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,16 +27,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class pertanyaan extends AppCompatActivity {
 
-    String[] pertanyaanForResponden;
     String url;
     String output = "";
-    ModelPertanyaan modelPertanyaan;
-    TextView pertanyaan, nomorPertanyaan;
-
+    TextView pertanyaan, nomorPertanyaan,waktu;
 
 
     //radio button library
@@ -47,11 +50,18 @@ public class pertanyaan extends AppCompatActivity {
     ArrayList<String> listdata = new ArrayList<>();
     ArrayList<String> listpertanyaan = new ArrayList<String>();
 
+    DbHelper dbHelper = new DbHelper(this);
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pertanyaan);
+
+        if(dbHelper.cekDb() == true){
+            dbHelper.deleteAll();
+        }
 
         //
          pilKepentingan5 = findViewById(R.id.choice_5);
@@ -59,7 +69,7 @@ public class pertanyaan extends AppCompatActivity {
          pilKepentingan3 = findViewById(R.id.choice_3);
          pilKepentingan2 = findViewById(R.id.choice_2);
          pilKepentingan1 = findViewById(R.id.choice_1);
-
+        //
          pilKinerja5 = findViewById(R.id.choice_5p);
          pilKinerja4 = findViewById(R.id.choice_4p);
          pilKinerja3 = findViewById(R.id.choice_3p);
@@ -69,22 +79,11 @@ public class pertanyaan extends AppCompatActivity {
         nomorPertanyaan = findViewById(R.id.id_noPertanyaan);
         pertanyaan = findViewById(R.id.id_pertanyaan);
 
+        waktu = findViewById(R.id.id_time);
+
         SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
         SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
 
-        //
-//         final SharedPrefManager prefManager = new SharedPrefManager(this);
-//         if(!prefManager.pengisianBio()){
-//             backToBio();
-//         }
-
-
-//        ModelBio modelBio = prefManager.getUserBio();
-//
-//        String sNama = modelBio.getNama();
-//        String sUmur = modelBio.getUmur();
-
-//        Log.e("tag", "namanya" + sNama);
 
 //        url = "http://hotels.googlee.win/api/get-all-pertanyaan";
 //        url = "http://http://127.0.0.1:8000/api/get-all-pertanyaan";
@@ -105,20 +104,20 @@ public class pertanyaan extends AppCompatActivity {
 //                                pertanyaan.setText(jsonObject1.getString("pertanyaan"));
                                 listdata.add(jsonArray.getString(i));
 //                                Log.e("donee ", "donee") ;
-
                             }
 
-                            Log.e("list1", "list1" + listdata.size());
+                            Log.e("Jumlah List = ", "Jumlah List" + listdata.size());
                             String per = listdata.get(indexPertanyaan);
                             JSONObject joData = new JSONObject(per);
                             per = joData.getString("pertanyaan");
+                            String _id = joData.getString("id");
+                            Log.e("id = ", _id);
+
                             pertanyaan.setText(per);
                             noPert++;
                             nomorPertanyaan.setText("" + noPert + "/" + jsonArray.length());
 
                             Log.e("isi per", "Isi Per"+ per);
-
-
 
 
                         } catch (JSONException e) {
@@ -142,12 +141,93 @@ public class pertanyaan extends AppCompatActivity {
         requestQueue.add(stringRequest);
 //        Log.e("isi List Data2", "isi List Data2" + listdata);
 
+        new CountDownTimer(15000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                waktu.setText("waktu pengisian : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Waktu Habis", Toast.LENGTH_SHORT);
+                toast.show();
+
+                //
+                SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
+                SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
+                //
+                listpertanyaan = listdata;
+                Log.e("index", "index" + indexPertanyaan);
+                Log.e("nopert", "nopert" + noPert);
+
+                String idPertanyaan = listpertanyaan.get(indexPertanyaan);
+                JSONObject jsonObject1 = null;
+                try {
+                    jsonObject1 = new JSONObject(idPertanyaan);
+                    int id_pertanyaan = jsonObject1.getInt("id");;
+
+                    Log.e("id_pertanyaan", String.valueOf(id_pertanyaan));
+                    Log.e("jawabanKepentingan", String.valueOf(jawKepentingan()));
+                    Log.e("jawabanKinerja", String.valueOf(jawKinerja()));
+
+                    int user_id = 0;
+                    int pertanyaan_id = id_pertanyaan;
+                    int kepentingan = 1;
+                    int kinerja = 1;
+
+                    try {
+                        dbHelper.insert(user_id, pertanyaan_id, kepentingan, kinerja);
+                        Log.e("data", dbHelper.getAllData().toString());
+                    }catch (Exception e){
+                        Log.e("errorrrrr", e.toString());
+                    }
 
 
 
+                Log.e("index", "index" + indexPertanyaan);
+                indexPertanyaan++;
+                noPert++;
+                output = listpertanyaan.get(indexPertanyaan);
+                JSONObject jsonObject2 = null;
+                try {
+                    jsonObject2 = new JSONObject(output);
+                    output = jsonObject2.getString("pertanyaan");
+
+                    sgKepentingan.clearCheck();
+                    sgKinerja.clearCheck();
+                    pertanyaan.setText(output);
+                    nomorPertanyaan.setText("" + noPert + "/" + listpertanyaan.size());
+                    this.start();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+//            Log.e("id Pertanyaaan : ", jsonObject.getString("id"));
+
+
+//
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }.start();
     }
 
     public void next(View view) throws JSONException {
+
+        new CountDownTimer(15000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                waktu.setText("waktu pengisian : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Waktu Habis", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }.start();
+
         //
         SingleSelectToggleGroup sgKepentingan = findViewById(R.id.id_sg_kepentingan);
         SingleSelectToggleGroup sgKinerja = findViewById(R.id.id_sg_kinerja);
@@ -155,15 +235,47 @@ public class pertanyaan extends AppCompatActivity {
         listpertanyaan = listdata;
         Log.e("index", "index" + indexPertanyaan);
         Log.e("nopert", "nopert" + noPert);
-        indexPertanyaan++;
-        noPert++;
+
+
 
         if ( indexPertanyaan == listpertanyaan.size() ){
             startActivity(new Intent(getApplicationContext(), finish.class));
         } else if (jawKepentingan() !=0 && jawKinerja() != 0){
+            String idPertanyaan = listpertanyaan.get(indexPertanyaan);
+            JSONObject jsonObject1 = new JSONObject(idPertanyaan);
+            int id_pertanyaan = jsonObject1.getInt("id");
+
+            Log.e("id_pertanyaan", String.valueOf(id_pertanyaan));
+            Log.e("jawabanKepentingan", String.valueOf(jawKepentingan()));
+            Log.e("jawabanKinerja", String.valueOf(jawKinerja()));
+
+            //get current time second
+//            long time = System.currentTimeMillis();
+//            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+//            String dateString = sdf.format(time);
+//            Log.e("time", dateString);
+
+
+            int user_id = 0;
+            int pertanyaan_id = id_pertanyaan;
+            int kepentingan = jawKepentingan();
+            int kinerja = jawKinerja();
+
+            try {
+                dbHelper.insert(user_id, pertanyaan_id, kepentingan, kinerja);
+            }catch (Exception e){
+                Log.e("errorrrrr", e.toString());
+            }
+            Log.e("isi = ", "" + dbHelper.getAllData());
+
+            indexPertanyaan++;
+            noPert++;
             output = listpertanyaan.get(indexPertanyaan);
             JSONObject jsonObject = new JSONObject(output);
             output = jsonObject.getString("pertanyaan");
+
+//            Log.e("id Pertanyaaan : ", jsonObject.getString("id"));
+
             sgKepentingan.clearCheck();
             sgKinerja.clearCheck();
             pertanyaan.setText(output);
@@ -177,7 +289,10 @@ public class pertanyaan extends AppCompatActivity {
             Toast toast = Toast.makeText(pertanyaan.this, "Anda Belum Memilih Kinerja", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0,0);
             toast.show();
-        }else{
+        }
+
+
+        else{
             Toast toast = Toast.makeText(pertanyaan.this, "Anda Belum Memilih", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0,0);
             toast.show();
@@ -221,71 +336,11 @@ public class pertanyaan extends AppCompatActivity {
         return 0;
     }
 
-    void getDATA(){
-        url = "http://hotels.googlee.win/api/get-all-pertanyaan";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-
-                            JSONObject jsonObject = new JSONObject(response.toString());
-                            JSONArray jsonArray = jsonObject.getJSONArray("data");
-
-                            for (int i=0; i<jsonArray.length(); i++){
-//                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-//                                Log.e("jsobj", "jsobj" + jsonObject1);
-//                                pertanyaan.setText(jsonObject1.getString("pertanyaan"));
-                                listdata.add(jsonArray.getString(i));
-//                                Log.e("donee ", "donee") ;
-
-                            }
-
-//                            listpertanyaan = listdata;
-//                            Log.e("list1", "list1" + listdata.size());
-                            String per = listdata.get(indexPertanyaan);
-                            JSONObject joData = new JSONObject(per.toString());
-                            per = joData.getString("pertanyaan");
-                            pertanyaan.setText(per);
-//                            noPert++;
-//                            nomorPertanyaan.setText(""+noPert+"/"+jsonArray.length());
-//
-//                            Log.e("isi per", "Isi Per"+ per);
-
-
-
-
-                        } catch (JSONException e) {
-                            Log.e("ERROR", "erork");
-                            e.printStackTrace();
-                        }
-                    }
-
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(
-                                pertanyaan.this,
-                                error.getMessage(),
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-//        Log.e("isi List Data2", "isi List Data2" + listdata);
-    }
-
-    void showPertanyaan(){
-
-
-
-    }
-
-
-
-
+    //get time activity
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        long startTime = System.currentTimeMillis();
+//        Log.e("start time", "start time" + startTime);
+//    }
 }

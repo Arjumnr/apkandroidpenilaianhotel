@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.apk_android_penilaian_hotel.Models.ModelData;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,7 +20,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "DB_HOTEL";
     public static final String DB_TABLE_NAME = "DATA_RESPONDEN";
     public static final String DB_COLUMN_ID = "_id";
-    public static final String DB_COLUMN_USER = "user_id";
     public static final String DB_COLUMN_PILKEP = "kepentingan";
     public static final String DB_COLUMN_PILKIN = "kinerja";
 
@@ -30,7 +30,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final  String SQL_CREATE_TABLE = "CREATE TABLE DATA_RESPONDEN (id INTEGER PRIMARY KEY autoincrement, user_id TEXT, pertanyaan_id TEXT NOT NULL, kepentingan TEXT NOT NULL, kinerja TEXT NOT NULL )";
+        final  String SQL_CREATE_TABLE = "CREATE TABLE DATA_RESPONDEN (id INTEGER PRIMARY KEY autoincrement, pertanyaan_id TEXT NOT NULL, kepentingan TEXT NOT NULL, kinerja TEXT NOT NULL, waktu TEXT NOT NULL )";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
 
     }
@@ -43,12 +43,12 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public void insert(int user_id,int pertanyaan_id, int kepentingan, int kinerja){
+    public void insert(int pertanyaan_id, int kepentingan, int kinerja, Time waktu){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("user_id", user_id);
         contentValues.put("pertanyaan_id", pertanyaan_id);
         contentValues.put("kepentingan", kepentingan);
         contentValues.put("kinerja", kinerja);
+        contentValues.put("waktu", waktu.toString());
         Log.e("data", contentValues.toString());
         try{
             this.getWritableDatabase().insertOrThrow("DATA_RESPONDEN","", contentValues);
@@ -68,11 +68,10 @@ public class DbHelper extends SQLiteOpenHelper {
         if(cursor != null && cursor.moveToFirst()){
             do{
                 HashMap<String, String> map = new HashMap<>();
-                map.put("_id", cursor.getString(0));
-                map.put("user_id", cursor.getString(1));
-                map.put("pertanyaan_id", cursor.getString(2));
-                map.put("kepentingan", cursor.getString(3));
-                map.put("kinerja", cursor.getString(4));
+                map.put("pertanyaan_id", cursor.getString(1));
+                map.put("kepentingan", cursor.getString(2));
+                map.put("kinerja", cursor.getString(3));
+                map.put("waktu", cursor.getString(4));
                 dataArrayList.add(map);
             }while (cursor.moveToNext());
         }
@@ -80,6 +79,8 @@ public class DbHelper extends SQLiteOpenHelper {
         return dataArrayList;
 
     }
+
+
 
     //delete all
     public void deleteAll(){

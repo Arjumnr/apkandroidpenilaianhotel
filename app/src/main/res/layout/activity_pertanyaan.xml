@@ -50,21 +50,23 @@
                 android:layout_gravity="center"
                 android:padding="8dp"
                 >
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="25pt"
-                    android:padding="10dp"
-                    android:text="5"/>
 
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_4"
+                    android:id="@+id/choice_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="4"/>
+                    android:text="1"/>
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/choice_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25pt"
+                    android:padding="10dp"
+                    android:text="2"/>
+
                 <com.nex3z.togglebuttongroup.button.CircularToggle
                     android:id="@+id/choice_3"
                     android:layout_width="wrap_content"
@@ -74,19 +76,20 @@
                     android:text="3"/>
 
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_2"
+                    android:id="@+id/choice_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="2"/>
+                    android:text="4"/>
+
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_1"
+                    android:id="@+id/choice_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="1"/>
+                    android:text="5"/>
 
             </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
 
@@ -111,20 +114,21 @@
                 android:padding="8dp"
                 >
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_5p"
+                    android:id="@+id/choice_1p"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="5"/>
+                    android:text="1"/>
 
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_4p"
+                    android:id="@+id/choice_2p"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="4"/>
+                    android:text="2"/>
+
                 <com.nex3z.togglebuttongroup.button.CircularToggle
                     android:id="@+id/choice_3p"
                     android:layout_width="wrap_content"
@@ -134,19 +138,21 @@
                     android:text="3"/>
 
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_2p"
+                    android:id="@+id/choice_4p"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="2"/>
+                    android:text="4"/>
+
                 <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/choice_1p"
+                    android:id="@+id/choice_5p"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="25pt"
                     android:padding="10dp"
-                    android:text="1"/>
+                    android:text="5"/>
+
 
             </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
 
@@ -169,11 +175,11 @@
             android:layout_marginBottom="50dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/id_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00"/>
+<!--            <TextView-->
+<!--                android:id="@+id/id_time"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="00:00"/>-->
 
             <TextView
                 android:layout_marginTop="10dp"

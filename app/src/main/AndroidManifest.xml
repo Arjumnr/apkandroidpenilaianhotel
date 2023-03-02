@@ -3,6 +3,7 @@
     package="com.example.apk_android_penilaian_hotel">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -25,9 +26,7 @@
         <activity
             android:name=".pertanyaan"
             android:exported="false" />
-        <activity
-            android:name=".Bio"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
